@@ -265,12 +265,6 @@ element_snow = pygame.transform.scale(pygame.image.load(os.path.join('Assets', '
 Colors = Colors()
 Settings = Settings()
 
-
-
-
-            
-
-
 def main():
     runtime = True
     clock = pygame.time.Clock()
