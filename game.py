@@ -203,9 +203,11 @@ class ui:
     ui.displayCard(440,500, ui.displayCardFormat(selfhand[3], 'color'),ui.displayCardFormat(selfhand[3], 'element'),ui.displayCardFormat(selfhand[3], 'value'),ui.displayCardFormat(selfhand[3], 'bg'))
     ui.displayCard(570,500, ui.displayCardFormat(selfhand[4], 'color'),ui.displayCardFormat(selfhand[4], 'element'),ui.displayCardFormat(selfhand[4], 'value'),ui.displayCardFormat(selfhand[4], 'bg'))
     mLeftClick = False
+
     for event in pygame.event.get():
       if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
         mLeftClick = True
+    
     if utils.isHovered(50,175,500,700,pygame.mouse.get_pos()) and mLeftClick:
       Card.useCard(0,'self')
     if utils.isHovered(180,305,500,700,pygame.mouse.get_pos()) and mLeftClick:
@@ -216,6 +218,13 @@ class ui:
       Card.useCard(3,'self')
     if utils.isHovered(570,695,500,700,pygame.mouse.get_pos()) and mLeftClick:
       Card.useCard(4,'self')
+    
+    for index in selfBank:
+      win.blit(ui.displayCardFormat(selfBank[index], 'color'), (utils.dynamicSpacer(index, 30),utils.dynamicSpacer(index),70))
+      win.blit(ui.displayCardFormat(selfBank[index], 'value'), (utils.dynamicSpacer(index, 30) + 5, utils.dynamicSpacer(index),70) + 15)
+      win.blit(ui.displayCardFormat(selfBank[index], 'bg'), (utils.dynamicSpacer(index, 30), utils.dynamicSpacer(index),70))
+      win.blit(ui.displayCardFormat(selfBank[index], 'element'), (utils.dynamicSpacer(index, 30) + 5, utils.dynamicSpacer(index),70) + 50)
+    
     pygame.display.update()
 
   def startgame(activegame):
