@@ -11,11 +11,13 @@ enemyBank = []
 
 width, height = 1080, 720
 win = pygame.display.set_mode((width, height))
+mLeftClick = False
 
 pygame.display.set_caption('Card Jitsu')
 
 class Colors:
     WHITE = (255, 255, 255)
+    GRAY = (81,92,101)
     BLACK = (0, 0, 0)
     GREEN = (0, 255, 0)
 
@@ -120,9 +122,10 @@ class utils:
         return True
     return False    
 
-  def dynamicSpacer(index):
-    for x in index:
-      returnValue += 15
+  def dynamicSpacer(index, amount):
+    returnValue = 0
+    for x in range(index):
+      returnValue += amount
     return returnValue
 
 class ui:
@@ -193,25 +196,26 @@ class ui:
       return returnBG
     
   def draw():
-    win.fill(Colors.WHITE)
-    mouse = pygame.mouse.get_pressed()
+    win.fill(Colors.GRAY)
     ui.displayCard(50,500, ui.displayCardFormat(selfhand[0], 'color'),ui.displayCardFormat(selfhand[0], 'element'),ui.displayCardFormat(selfhand[0], 'value'),ui.displayCardFormat(selfhand[0], 'bg'))
     ui.displayCard(180,500, ui.displayCardFormat(selfhand[1], 'color'),ui.displayCardFormat(selfhand[1], 'element'),ui.displayCardFormat(selfhand[1], 'value'),ui.displayCardFormat(selfhand[1], 'bg'))
     ui.displayCard(310,500, ui.displayCardFormat(selfhand[2], 'color'),ui.displayCardFormat(selfhand[2], 'element'),ui.displayCardFormat(selfhand[2], 'value'),ui.displayCardFormat(selfhand[2], 'bg'))
     ui.displayCard(440,500, ui.displayCardFormat(selfhand[3], 'color'),ui.displayCardFormat(selfhand[3], 'element'),ui.displayCardFormat(selfhand[3], 'value'),ui.displayCardFormat(selfhand[3], 'bg'))
     ui.displayCard(570,500, ui.displayCardFormat(selfhand[4], 'color'),ui.displayCardFormat(selfhand[4], 'element'),ui.displayCardFormat(selfhand[4], 'value'),ui.displayCardFormat(selfhand[4], 'bg'))
+    mLeftClick = False
     for event in pygame.event.get():
-      if event.type == pygame.MOUSEBUTTONDOWN:
-        if utils.isHovered(50,175,500,700,pygame.mouse.get_pos()):
-          Card.useCard(0,'self')
-        if utils.isHovered(180,305,500,700,pygame.mouse.get_pos()):
-          Card.useCard(1,'self')
-        if utils.isHovered(310,435,500,700,pygame.mouse.get_pos()):
-          Card.useCard(2,'self')
-        if utils.isHovered(440,565,500,700,pygame.mouse.get_pos()):
-          Card.useCard(3,'self')
-        if utils.isHovered(570,695,500,700,pygame.mouse.get_pos()):
-          Card.useCard(4,'self')
+      if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+        mLeftClick = True
+    if utils.isHovered(50,175,500,700,pygame.mouse.get_pos()) and mLeftClick:
+      Card.useCard(0,'self')
+    if utils.isHovered(180,305,500,700,pygame.mouse.get_pos()) and mLeftClick:
+      Card.useCard(1,'self')
+    if utils.isHovered(310,435,500,700,pygame.mouse.get_pos()) and mLeftClick:
+      Card.useCard(2,'self')
+    if utils.isHovered(440,565,500,700,pygame.mouse.get_pos()) and mLeftClick:
+      Card.useCard(3,'self')
+    if utils.isHovered(570,695,500,700,pygame.mouse.get_pos()) and mLeftClick:
+      Card.useCard(4,'self')
     pygame.display.update()
 
   def startgame(activegame):
