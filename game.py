@@ -120,6 +120,11 @@ class utils:
         return True
     return False    
 
+  def dynamicSpacer(index):
+    for x in index:
+      returnValue += 15
+    return returnValue
+
 class ui:
   def displayCard(x, y,  color, element, number, bg):
     win.blit(color, (x,y))
@@ -187,7 +192,6 @@ class ui:
     if type == 'bg':
       return returnBG
     
-
   def draw():
     win.fill(Colors.WHITE)
     mouse = pygame.mouse.get_pressed()
@@ -196,8 +200,18 @@ class ui:
     ui.displayCard(310,500, ui.displayCardFormat(selfhand[2], 'color'),ui.displayCardFormat(selfhand[2], 'element'),ui.displayCardFormat(selfhand[2], 'value'),ui.displayCardFormat(selfhand[2], 'bg'))
     ui.displayCard(440,500, ui.displayCardFormat(selfhand[3], 'color'),ui.displayCardFormat(selfhand[3], 'element'),ui.displayCardFormat(selfhand[3], 'value'),ui.displayCardFormat(selfhand[3], 'bg'))
     ui.displayCard(570,500, ui.displayCardFormat(selfhand[4], 'color'),ui.displayCardFormat(selfhand[4], 'element'),ui.displayCardFormat(selfhand[4], 'value'),ui.displayCardFormat(selfhand[4], 'bg'))
-    if utils.isHovered(50,175,500,700,pygame.mouse.get_pos()) and mouse[0]:
-      Card.useCard(0,'self')
+    for event in pygame.event.get():
+      if event.type == pygame.MOUSEBUTTONDOWN:
+        if utils.isHovered(50,175,500,700,pygame.mouse.get_pos()):
+          Card.useCard(0,'self')
+        if utils.isHovered(180,305,500,700,pygame.mouse.get_pos()):
+          Card.useCard(1,'self')
+        if utils.isHovered(310,435,500,700,pygame.mouse.get_pos()):
+          Card.useCard(2,'self')
+        if utils.isHovered(440,565,500,700,pygame.mouse.get_pos()):
+          Card.useCard(3,'self')
+        if utils.isHovered(570,695,500,700,pygame.mouse.get_pos()):
+          Card.useCard(4,'self')
     pygame.display.update()
 
   def startgame(activegame):
