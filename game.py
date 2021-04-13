@@ -9,6 +9,7 @@ enemyhand = []
 selfBank = []
 enemyBank = []
 clickedTimeStamp = time.time()
+Whowon = ''
 
 width, height = 1080, 720
 win = pygame.display.set_mode((width, height))
@@ -198,6 +199,8 @@ class ui:
     
   def draw():
     global clickedTimeStamp
+    global Whowon
+    EnemyCardPlayed = random.randint(0,4)
     mouse = pygame.mouse.get_pressed()
     win.fill(Colors.GRAY)
     ui.displayCard(50,500, ui.displayCardFormat(selfhand[0], 'color'),ui.displayCardFormat(selfhand[0], 'element'),ui.displayCardFormat(selfhand[0], 'value'),ui.displayCardFormat(selfhand[0], 'bg'))
@@ -207,31 +210,35 @@ class ui:
     ui.displayCard(570,500, ui.displayCardFormat(selfhand[4], 'color'),ui.displayCardFormat(selfhand[4], 'element'),ui.displayCardFormat(selfhand[4], 'value'),ui.displayCardFormat(selfhand[4], 'bg'))
     if time.time() - clickedTimeStamp >= 0.5:
       if utils.isHovered(50,175,500,700,pygame.mouse.get_pos()) and mouse[0]:
-        Card.useCard(0,'self')
+        roundSelfCardPlayed = Card.useCard(0,'self')
+        roundEnemyCardPlayed = Card.useCard(EnemyCardPlayed, 'enemy')
+        utils.bankUpdate(utils.roundWinner(0,EnemyCardPlayed),roundSelfCardPlayed,roundEnemyCardPlayed)
         clickedTimeStamp = time.time()
       if utils.isHovered(180,305,500,700,pygame.mouse.get_pos()) and mouse[0]:
         Card.useCard(1,'self')
+        Card.useCard(EnemyCardPlayed, 'enemy')
         clickedTimeStamp = time.time()
       if utils.isHovered(310,435,500,700,pygame.mouse.get_pos()) and mouse[0]:
         Card.useCard(2,'self')
+        Card.useCard(EnemyCardPlayed, 'enemy')
         clickedTimeStamp = time.time()
       if utils.isHovered(440,565,500,700,pygame.mouse.get_pos()) and mouse[0]:
         Card.useCard(3,'self')
+        Card.useCard(EnemyCardPlayed, 'enemy')
         clickedTimeStamp = time.time()
       if utils.isHovered(570,695,500,700,pygame.mouse.get_pos()) and mouse[0]:
         Card.useCard(4,'self')
+        Card.useCard(EnemyCardPlayed, 'enemy')
         clickedTimeStamp = time.time()
-    
-    for index in selfBank:
-      win.blit(ui.displayCardFormat(selfBank[index], 'color'), (utils.dynamicSpacer(index, 30), utils.dynamicSpacer(index, 70)))
-      win.blit(ui.displayCardFormat(selfBank[index], 'value'), (utils.dynamicSpacer(index, 30) + 5, utils.dynamicSpacer(index, 70) + 15))
-      win.blit(ui.displayCardFormat(selfBank[index], 'bg'), (utils.dynamicSpacer(index, 30), utils.dynamicSpacer(index, 70)))
-      win.blit(ui.displayCardFormat(selfBank[index], 'element'), (utils.dynamicSpacer(index, 30) + 5, utils.dynamicSpacer(index, 70) + 50))
-    
+    for index in range(len(selfBank)):
+      win.blit(ui.displayCardFormat(selfBank[index], 'color'), (utils.dynamicSpacer(index, 35), 70))
+      win.blit(ui.displayCardFormat(selfBank[index], 'value'), (utils.dynamicSpacer(index, 35), 85))
+      win.blit(ui.displayCardFormat(selfBank[index], 'bg'), (utils.dynamicSpacer(index, 35), 70))
+      win.blit(ui.displayCardFormat(selfBank[index], 'element'), (utils.dynamicSpacer(index, 35) + 5, 120))
     pygame.display.update()
 
   def startgame(activegame):
-    win.fill(Colors.WHITE)
+    win.fill(Colors.GRAY)
     mouse = pygame.mouse.get_pressed()
     if activegame == False:
         pygame.draw.rect(win, Colors.GREEN, Box)
@@ -239,6 +246,16 @@ class ui:
             return True
     pygame.display.update()
     return False
+
+  def drawEndScreen(whowon):
+    if whowon == 'self':
+      win.fill(Colors.GRAY)
+      win.blit(splashscreen_win,(0, 0))
+    if whowon == 'enemy':
+      win.fill(Colors.GRAY)
+      win.blit(splashscreen_lost, (0, 0))
+    pygame.display.update()
+
 
 class deal:
   def dealNewHandToSelf():
@@ -291,14 +308,18 @@ card_bg_water = pygame.image.load(os.path.join('Assets', 'card_bg_water.png'))
 element_fire = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'fire.png')), (30, 30))
 element_water = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'water.png')), (30, 30))
 element_snow = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'snow.png')), (30, 30))
+splashscreen_win = pygame.image.load(os.path.join('Assets', 'splashscreen_win.png'))
+splashscreen_lost = pygame.image.load(os.path.join('Assets', 'splashscreen_lost.png'))
 
 Colors = Colors()
 Settings = Settings()
 
 def main():
+    global Whowon
     runtime = True
     clock = pygame.time.Clock()
     activegame = False
+    ingame = False
     utils.newGame()
     deal.dealNewHandToEnemy()
     deal.dealNewHandToSelf()
@@ -307,10 +328,28 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 runtime = False
+        if utils.didIWinYet(selfBank):
+          print('you won')
+          Whowon = 'self'
+          ingame = False
+        if utils.didIWinYet(enemyBank):
+          print('you lost')
+          Whowon = 'enemy'
+          ingame = False
         if activegame == False:
             activegame = ui.startgame(activegame)
         else:
-            ui.draw()
+            ingame = True
+            if utils.didIWinYet(selfBank):
+              Whowon = 'self'
+              ingame = False
+            if utils.didIWinYet(enemyBank):
+              Whowon = 'enemy'
+              ingame = False
+            if ingame:
+              ui.draw()
+            else:
+              ui.drawEndScreen(Whowon)
         
 
     pygame.quit()
